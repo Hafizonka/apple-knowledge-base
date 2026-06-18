@@ -1,0 +1,965 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Apple база знаний для стажеров</title>
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --panel: #ffffff;
+      --panel-2: #fbfbfd;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --line: #d2d2d7;
+      --accent: #0071e3;
+      --good: #1d7f45;
+      --warn: #b45f06;
+      --shadow: 0 18px 50px rgba(0, 0, 0, .08);
+      --radius: 8px;
+    }
+    [data-theme="dark"] {
+      --bg: #101012;
+      --panel: #1c1c1e;
+      --panel-2: #242426;
+      --text: #f5f5f7;
+      --muted: #a1a1a6;
+      --line: #38383c;
+      --accent: #2997ff;
+      --good: #45c36f;
+      --warn: #ffb340;
+      --shadow: 0 18px 50px rgba(0, 0, 0, .35);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+    }
+    button, input { font: inherit; }
+    .app { min-height: 100vh; display: grid; grid-template-columns: 280px 1fr; }
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 22px 18px;
+      border-right: 1px solid var(--line);
+      background: color-mix(in srgb, var(--panel) 88%, transparent);
+      backdrop-filter: blur(18px);
+      overflow: auto;
+    }
+    .brand { display: grid; gap: 4px; margin-bottom: 18px; }
+    .brand strong { font-size: 18px; }
+    .brand span { color: var(--muted); font-size: 13px; }
+    .search { position: relative; margin: 18px 0; }
+    .search input {
+      width: 100%;
+      height: 40px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 0 12px 0 34px;
+      background: var(--panel-2);
+      color: var(--text);
+      outline: none;
+    }
+    .search svg { position: absolute; left: 11px; top: 11px; color: var(--muted); }
+    nav { display: grid; gap: 5px; }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      padding: 9px 10px;
+      border-radius: var(--radius);
+      font-size: 14px;
+    }
+    nav a:hover, nav a.active { background: var(--panel-2); color: var(--accent); }
+    .theme {
+      margin-top: 18px;
+      width: 100%;
+      height: 40px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    main { padding: 34px clamp(18px, 4vw, 54px) 60px; max-width: 1320px; width: 100%; }
+    header { margin-bottom: 30px; }
+    .eyebrow { color: var(--accent); font-weight: 650; font-size: 13px; }
+    h1 { font-size: clamp(34px, 5vw, 64px); line-height: 1.02; margin: 8px 0 12px; letter-spacing: 0; }
+    .lead { color: var(--muted); max-width: 850px; font-size: 19px; }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .pill { border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 7px 10px; color: var(--muted); font-size: 13px; }
+    section {
+      margin: 18px 0;
+      padding: 28px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    h2 { margin: 0 0 8px; font-size: 30px; letter-spacing: 0; }
+    h3 { margin: 24px 0 10px; font-size: 20px; letter-spacing: 0; }
+    p { margin: 8px 0; }
+    .section-note { color: var(--muted); max-width: 860px; }
+    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px; margin-top: 16px; }
+    .card {
+      grid-column: span 4;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      background: var(--panel-2);
+    }
+    .card.wide { grid-column: span 6; }
+    .card.full { grid-column: 1 / -1; }
+    .card h3, .card h4 { margin-top: 0; }
+    .branch-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .branch-tag {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      color: var(--muted);
+      background: var(--panel-2);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .spec-list {
+      display: grid;
+      gap: 7px;
+      margin: 12px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .spec-list li {
+      margin: 0;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--panel) 70%, transparent);
+    }
+    .mini-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .mini-nav a {
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: var(--panel-2);
+      font-size: 13px;
+    }
+    .route {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .step {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel-2);
+      padding: 14px;
+    }
+    .step b {
+      display: inline-flex;
+      width: 28px;
+      height: 28px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      margin-bottom: 8px;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--panel);
+    }
+    .visual {
+      display: grid;
+      grid-template-columns: minmax(220px, 360px) 1fr;
+      gap: 18px;
+      align-items: center;
+      margin: 18px 0;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel-2);
+    }
+    .visual img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      border-radius: var(--radius);
+      background: #f5f5f7;
+    }
+    .visual.compact img { max-height: 210px; }
+    .swatches {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .swatch {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 30px;
+      padding: 5px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .dot {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,.16);
+      background: var(--c);
+      flex: 0 0 auto;
+    }
+    .model-matrix {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .model-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel-2);
+      padding: 14px;
+    }
+    .model-card h3 { margin-top: 0; }
+    .color-gallery {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .color-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel-2);
+      padding: 10px;
+      min-width: 0;
+    }
+    .color-card img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: contain;
+      border-radius: var(--radius);
+      background: #f5f5f7;
+      display: block;
+    }
+    .color-card strong { display: block; margin-top: 8px; font-size: 13px; }
+    .color-card span { display: block; color: var(--muted); font-size: 12px; margin-top: 3px; }
+    .muted { color: var(--muted); }
+    .benefit {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-left: 3px solid var(--good);
+      background: color-mix(in srgb, var(--good) 11%, transparent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+    .say {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-left: 3px solid var(--accent);
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+    .warn {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-left: 3px solid var(--warn);
+      background: color-mix(in srgb, var(--warn) 13%, transparent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); margin-top: 14px; }
+    table { width: 100%; border-collapse: collapse; min-width: 760px; background: var(--panel); }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { background: var(--panel-2); font-size: 13px; color: var(--muted); }
+    tr:last-child td { border-bottom: 0; }
+    details { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; margin: 10px 0; background: var(--panel-2); }
+    summary { cursor: pointer; font-weight: 650; }
+    ul { padding-left: 20px; }
+    li { margin: 6px 0; }
+    mark { background: #ffe066; color: #1d1d1f; border-radius: 4px; padding: 0 2px; }
+    .hidden { display: none !important; }
+    footer { color: var(--muted); font-size: 13px; padding: 18px 4px; }
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      aside { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+      nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      main { padding-top: 22px; }
+      section { padding: 20px; }
+      .card, .card.wide { grid-column: 1 / -1; }
+      .route { grid-template-columns: 1fr 1fr; }
+      .visual { grid-template-columns: 1fr; }
+      .model-matrix { grid-template-columns: 1fr; }
+      .color-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 520px) {
+      nav { grid-template-columns: 1fr; }
+      h1 { font-size: 36px; }
+      .lead { font-size: 16px; }
+      .route { grid-template-columns: 1fr; }
+      .color-gallery { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand">
+        <strong>Apple база знаний</strong>
+        <span>Матчасть для стажеров. Подход: характеристика → польза для клиента.</span>
+      </div>
+      <div class="search">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m21 21-4.3-4.3M10.8 18a7.2 7.2 0 1 1 0-14.4 7.2 7.2 0 0 1 0 14.4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="search" type="search" placeholder="Поиск: ProMotion, USB-C, M5...">
+      </div>
+      <nav id="nav">
+        <a href="#route">Маршрут обучения</a>
+        <a href="#iphone-map">iPhone: карта</a>
+        <a href="#iphone-17">iPhone 17</a>
+        <a href="#iphone-16">iPhone 16</a>
+        <a href="#iphone-15">iPhone 15</a>
+        <a href="#iphone-14">iPhone 14</a>
+        <a href="#iphone-13">iPhone 13</a>
+        <a href="#ipad-branch">iPad</a>
+        <a href="#macbook-branch">MacBook</a>
+        <a href="#watch-branch">Apple Watch</a>
+        <a href="#accessories-branch">Аксессуары Apple</a>
+        <a href="#compare">Быстрые отличия</a>
+        <a href="#terms">Термины</a>
+      </nav>
+      <button class="theme" id="themeBtn" type="button" aria-label="Переключить тему">
+        <span id="themeIcon">☾</span><span id="themeText">Темная тема</span>
+      </button>
+    </aside>
+    <main>
+      <header>
+        <div class="eyebrow">Apple Expert 2019 · рабочая версия</div>
+        <h1>Матчасть Apple для уверенного разговора в зале.</h1>
+        <p class="lead">Теперь это дерево обучения: отдельные ветки по iPhone 13-17 Pro Max, iPad 11, iPad Air 11/13 M4, iPad Pro 11/13 M5, актуальным MacBook, Apple Watch и аксессуарам Apple.</p>
+        <div class="meta">
+          <span class="pill">Светлая и темная тема</span>
+          <span class="pill">Поиск по всей базе: /</span>
+          <span class="pill">Сброс: Esc</span>
+          <span class="pill">Ветки по линейкам</span>
+          <span class="pill">Обновлено: 18 июня 2026</span>
+        </div>
+      </header>
+
+      <section id="route" data-searchable>
+        <div class="branch-head">
+          <div>
+            <h2>Как стажеру проходить базу</h2>
+            <p class="section-note">Сначала не учим все характеристики подряд. Учим порядок разговора: определить сценарий, сузить линейку, объяснить пользу, проверить совместимость и состояние.</p>
+          </div>
+          <span class="branch-tag">маршрут</span>
+        </div>
+        <div class="route">
+          <div class="step"><b>1</b><h3>Сценарий</h3><p>Для чего устройство: связь, фото, учеба, монтаж, подарок, спорт, работа, б.у. приемка.</p></div>
+          <div class="step"><b>2</b><h3>Линейка</h3><p>Обычный, Plus/Air, Pro или Pro Max. Для iPad: базовый, Air или Pro. Для MacBook: Air или Pro.</p></div>
+          <div class="step"><b>3</b><h3>Польза</h3><p>Переводим характеристику в выгоду: 120 Гц = плавность, USB-C = один кабель, Pro Max = батарея.</p></div>
+          <div class="step"><b>4</b><h3>Проверка</h3><p>Память, регион, аксессуары, гарантия, состояние, Apple ID / Find My, совместимость Pencil, Watch и зарядок.</p></div>
+        </div>
+      </section>
+
+      <section id="iphone-map" data-searchable>
+        <div class="branch-head">
+          <div>
+            <h2>iPhone: карта линейки 13-17 Pro Max</h2>
+            <p class="section-note">Главная логика для стажера: сначала понять поколение, потом уровень модели. База закрывает обычного клиента, Plus дает размер и батарею, Pro дает экран 120 Гц и камеры, Pro Max дает максимум и автономность.</p>
+          </div>
+          <span class="branch-tag">ветка iPhone</span>
+        </div>
+        <div class="mini-nav">
+          <a href="#iphone-17">17 / Air / 17e / Pro Max</a>
+          <a href="#iphone-16">16 / 16e / Pro Max</a>
+          <a href="#iphone-15">15 / Pro Max</a>
+          <a href="#iphone-14">14 / Pro Max</a>
+          <a href="#iphone-13">13 / mini / Pro Max</a>
+        </div>
+        <div class="visual">
+          <img src="https://www.apple.com/v/iphone/home/cj/images/overview/consider/designed-to_last__f60bwgep88ya_large.jpg" alt="Актуальные iPhone: Pro, Air и базовая модель">
+          <div>
+            <h3>Как визуально думать про iPhone</h3>
+            <p>У стажера должна быть простая опора: две камеры обычно база/Plus, три камеры - Pro, тонкий профиль - Air, самый большой корпус - Pro Max. Цвет и блок камер помогают быстро отличать поколение, но финально всегда сверяем модель в настройках.</p>
+            <div class="benefit"><strong>Выгода для клиента:</strong> не “у этой модели такой-то модуль”, а “вам проще выбрать: компактно, большой экран, камера, батарея или максимум”.</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Поколение</th><th>Модели в ветке</th><th>Главный смысл</th><th>Как объяснить клиенту</th></tr></thead>
+            <tbody>
+              <tr><td>iPhone 17</td><td>17e, 17, Air, 17 Pro, 17 Pro Max</td><td>Актуальная линейка с USB-C, свежими чипами, сильным экраном и упором на Apple Intelligence.</td><td>Самая свежая линейка: берут за срок актуальности, камеру, экран и запас.</td></tr>
+              <tr><td>iPhone 16</td><td>16e, 16, 16 Plus, 16 Pro, 16 Pro Max</td><td>Современная база дешевле 17-й, USB-C, Apple Intelligence, сильный баланс цены.</td><td>Если 17-й дорогой, 16-й часто лучший рациональный выбор.</td></tr>
+              <tr><td>iPhone 15</td><td>15, 15 Plus, 15 Pro, 15 Pro Max</td><td>Переход на USB-C и Dynamic Island, Pro на титане и с сильным зумом у Pro Max.</td><td>15-й ощущается современнее 14-го из-за USB-C и острова.</td></tr>
+              <tr><td>iPhone 14</td><td>14, 14 Plus, 14 Pro, 14 Pro Max</td><td>Последняя сильная Lightning-эпоха, Pro получил Dynamic Island и 48 МП.</td><td>Нормальный б.у. вариант, но надо честно проговорить Lightning и возраст.</td></tr>
+              <tr><td>iPhone 13</td><td>13 mini, 13, 13 Pro, 13 Pro Max</td><td>Минимальный современный вход: OLED, хорошая камера, но уже возраст и Lightning.</td><td>Берут за цену; обязательно проверять батарею и состояние.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="iphone-17" data-searchable>
+        <div class="branch-head"><div><h2>iPhone 17: 17e, 17, Air, 17 Pro, 17 Pro Max</h2><p class="section-note">Ветка для стажера: это актуальная линейка. Клиенту объясняем не только “новее”, а что именно он получает: экран, камеру, автономность, тонкий корпус или Pro-запас.</p></div><span class="branch-tag">iPhone 17</span></div>
+        <div class="visual">
+          <img src="https://www.apple.com/v/iphone/home/cj/images/overview/consider/designed-to_last__f60bwgep88ya_large.jpg" alt="Актуальные iPhone 17, iPhone Air и iPhone 17 Pro">
+          <div>
+            <h3>Цвета и визуальная память</h3>
+            <p>По Apple: iPhone 17 - Lavender, Sage, Mist Blue, White, Black; iPhone Air - Sky Blue, Light Gold, Cloud White, Space Black; iPhone 17 Pro - Cosmic Orange, Deep Blue, Silver; 17e - Soft Pink, White, Black.</p>
+            <div class="swatches">
+              <span class="swatch"><span class="dot" style="--c:#d8c7f2"></span>Lavender</span>
+              <span class="swatch"><span class="dot" style="--c:#9ead97"></span>Sage</span>
+              <span class="swatch"><span class="dot" style="--c:#b9d2e7"></span>Mist Blue</span>
+              <span class="swatch"><span class="dot" style="--c:#f4f4ef"></span>White</span>
+              <span class="swatch"><span class="dot" style="--c:#1d1d1f"></span>Black</span>
+              <span class="swatch"><span class="dot" style="--c:#ef7d3c"></span>Cosmic Orange</span>
+              <span class="swatch"><span class="dot" style="--c:#1d3558"></span>Deep Blue</span>
+              <span class="swatch"><span class="dot" style="--c:#d9d9d6"></span>Silver</span>
+            </div>
+          </div>
+        </div>
+        <div class="grid">
+          <article class="card"><h3>iPhone 17e</h3><p>Вход в свежую линейку: актуальный чип, USB-C, современная система, но проще по камерам и позиционированию.</p><ul class="spec-list"><li>Кому: нужен новый iPhone подешевле.</li><li>Продажа: “самый доступный свежий iPhone”.</li><li>Не обещать: Pro-камеру и максимум экрана.</li></ul></article>
+          <article class="card"><h3>iPhone 17</h3><p>Основной массовый выбор: свежий дизайн, хороший экран, сильная камера, USB-C, долгий срок актуальности.</p><ul class="spec-list"><li>Кому: большинству клиентов.</li><li>Продажа: “новый iPhone без переплаты за Pro”.</li><li>Апсейл: память 256 ГБ, если много фото и видео.</li></ul></article>
+          <article class="card"><h3>iPhone Air</h3><p>Про тонкость, легкость и ощущение в руке. Клиент покупает не таблицу характеристик, а вау-эффект корпуса.</p><ul class="spec-list"><li>Кому: важен большой экран без ощущения тяжелого Pro Max.</li><li>Продажа: “самый приятный в руке из больших”.</li><li>Компромисс: камеры не как у Pro.</li></ul></article>
+          <article class="card wide"><h3>iPhone 17 Pro</h3><p>Для фото, видео, игр, активной работы и тех, кто замечает плавность экрана. ProMotion, Always-On, сильный чип, продвинутая камера.</p><div class="benefit"><strong>Выгода:</strong> телефон дольше ощущается быстрым и дорогим, особенно после обычных 60 Гц.</div></article>
+          <article class="card wide"><h3>iPhone 17 Pro Max</h3><p>Максимальный экран и автономность в линейке. Лучшая рекомендация для клиента, который много снимает, играет, ездит и не хочет думать о зарядке.</p><div class="say"><strong>Фраза:</strong> “Pro Max берут не только из-за камеры. Его берут, чтобы каждый день был максимум экрана, батареи и запаса.”</div></article>
+        </div>
+        <h3>Картинки по моделям и цветам: iPhone 17</h3>
+        <div class="color-gallery">
+          <article class="color-card"><img src="https://www.apple.com/v/iphone-17/g/images/overview/product-viewer/colors_lavender__bcaie9a8npj6_large.jpg" alt="iPhone 17 Lavender"><strong>iPhone 17 Lavender</strong><span>Мягкий светлый цвет, хорошо заходит как подарок.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/iphone-17/g/images/overview/product-viewer/colors_sage__cr1jt90v1yoi_large.jpg" alt="iPhone 17 Sage"><strong>iPhone 17 Sage</strong><span>Спокойный зелёный, менее маркий визуально.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/iphone-17/g/images/overview/product-viewer/colors_mist_blue__700uff6zu2qa_large.jpg" alt="iPhone 17 Mist Blue"><strong>iPhone 17 Mist Blue</strong><span>Свежий голубой, легко отличать от старых синих.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/iphone-17/g/images/overview/product-viewer/colors_white__979ypubjzdum_large.jpg" alt="iPhone 17 White"><strong>iPhone 17 White</strong><span>Классический светлый вариант, хорошо под чехлы.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/iphone-17/g/images/overview/product-viewer/colors_black__fzuhc3kqvmq2_large.jpg" alt="iPhone 17 Black"><strong>iPhone 17 Black</strong><span>Самый универсальный, проще продавать без привязки к вкусу.</span></article>
+        </div>
+        <h3>Картинки по моделям и цветам: iPhone Air</h3>
+        <div class="color-gallery">
+          <article class="color-card"><img src="https://www.apple.com/v/iphone-air/g/images/overview/product-viewer/color_static_ultramarine__cgfuoct82biu_large.jpg" alt="iPhone Air Sky Blue"><strong>iPhone Air Sky Blue</strong><span>Тонкий корпус плюс самый заметный цвет.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/iphone-air/g/images/overview/product-viewer/color_static_gold__d1p7qgdkczo2_large.jpg" alt="iPhone Air Light Gold"><strong>iPhone Air Light Gold</strong><span>Подарочный и более “премиальный” визуально.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/iphone-air/g/images/overview/product-viewer/color_static_white__bsqapwl67oj6_large.jpg" alt="iPhone Air Cloud White"><strong>iPhone Air Cloud White</strong><span>Чистый светлый корпус, хорошо показывает тонкость.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/iphone-air/g/images/overview/product-viewer/color_static_black__bavqefsedg82_large.jpg" alt="iPhone Air Space Black"><strong>iPhone Air Space Black</strong><span>Самый строгий и деловой вариант.</span></article>
+        </div>
+        <h3>Картинки по моделям и цветам: iPhone 17 Pro / Pro Max</h3>
+        <div class="color-gallery">
+          <article class="color-card"><img src="https://www.apple.com/v/iphone-17-pro/g/images/overview/product-viewer/colors_orange__cr2oq3n1dwk2_large.jpg" alt="iPhone 17 Pro Cosmic Orange"><strong>17 Pro / Pro Max Cosmic Orange</strong><span>Самый узнаваемый цвет поколения, легко цепляет внимание.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/iphone-17-pro/g/images/overview/product-viewer/colors_blue__li170wg4gkae_large.jpg" alt="iPhone 17 Pro Deep Blue"><strong>17 Pro / Pro Max Deep Blue</strong><span>Тёмный, но не чёрный. Хорошо для тех, кто хочет сдержанно, но не банально.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/iphone-17-pro/g/images/overview/product-viewer/colors_silver__eb8fu7zfvwmu_large.jpg" alt="iPhone 17 Pro Silver"><strong>17 Pro / Pro Max Silver</strong><span>Классика Pro-линейки, проще сочетать с аксессуарами.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/iphone-17e/c/images/overview/durability/caption-tile-gallery/colors__b1yu552rgbte_large.jpg" alt="iPhone 17e colors"><strong>iPhone 17e colors</strong><span>Apple отдаёт общий кадр цветов: Soft Pink, White, Black.</span></article>
+        </div>
+        <h3>Глубокая таблица для объяснения</h3>
+        <div class="table-wrap"><table><thead><tr><th>Модель</th><th>Экран и ощущение</th><th>Камера</th><th>Память и срок</th><th>Когда продавать</th></tr></thead><tbody>
+          <tr><td>17e</td><td>Современный OLED, без Pro-ощущения</td><td>Хорошая базовая камера</td><td>Советовать 256 ГБ, если клиент хранит фото локально</td><td>Клиент хочет новый iPhone дешевле основной линейки</td></tr>
+          <tr><td>17</td><td>Свежий массовый экран, USB-C</td><td>Сильная основная камера для семьи, соцсетей, документов</td><td>128 ГБ только при iCloud; 256 ГБ спокойнее</td><td>Большинство покупателей нового iPhone</td></tr>
+          <tr><td>Air</td><td>Большой экран в тонком корпусе</td><td>Не Pro-система, зато корпус легче воспринимается</td><td>Лучше не экономить на памяти</td><td>Клиенту важны дизайн, легкость, “вау в руке”</td></tr>
+          <tr><td>17 Pro</td><td>120 Гц, Always-On, флагманская яркость</td><td>Pro-камера, зум, видео, съемка в сложном свете</td><td>256 ГБ как нормальный старт для Pro</td><td>Фото, видео, игры, запас на годы</td></tr>
+          <tr><td>17 Pro Max</td><td>Самый большой экран</td><td>Максимум камеры и зума в поколении</td><td>256/512 ГБ и выше для видео</td><td>Автономность, большой экран, максимальный флагман</td></tr>
+        </tbody></table></div>
+        <div class="chips"><span class="chip">USB-C</span><span class="chip">Apple Intelligence</span><span class="chip">ProMotion у Pro</span><span class="chip">Pro Max = батарея</span><span class="chip">Air = тонкость</span></div>
+      </section>
+
+      <section id="iphone-16" data-searchable>
+        <div class="branch-head"><div><h2>iPhone 16: 16e, 16, 16 Plus, 16 Pro, 16 Pro Max</h2><p class="section-note">Сильная ветка для продажи “почти актуально, но дешевле”. Важно объяснять Apple Intelligence, USB-C, размер и отличия Pro.</p></div><span class="branch-tag">iPhone 16</span></div>
+        <div class="table-wrap"><table><thead><tr><th>Модель</th><th>Смысл</th><th>Сильный аргумент</th><th>Осторожно</th></tr></thead><tbody>
+          <tr><td>iPhone 16e</td><td>Доступный современный iPhone</td><td>Свежая платформа и USB-C дешевле основной линейки</td><td>Проще камера и меньше флагманских ощущений</td></tr>
+          <tr><td>iPhone 16</td><td>Оптимум для большинства</td><td>Современный корпус, камера, Apple Intelligence, USB-C</td><td>Экран 60 Гц, если клиент сравнивает с Pro</td></tr>
+          <tr><td>iPhone 16 Plus</td><td>Большой экран и батарея</td><td>Большой iPhone дешевле Pro Max</td><td>Не Pro-камера и не 120 Гц</td></tr>
+          <tr><td>iPhone 16 Pro</td><td>Компактный Pro</td><td>120 Гц, Pro-камеры, запас мощности</td><td>Меньше экран и батарея, чем у Pro Max</td></tr>
+          <tr><td>iPhone 16 Pro Max</td><td>Флагман предыдущего поколения</td><td>Большой экран, сильная автономность, Pro-возможности</td><td>Сравнить цену с 17 Pro Max</td></tr>
+        </tbody></table></div>
+        <div class="say"><strong>Фраза для зала:</strong> “16-я линейка хороша, когда хочется современный iPhone с USB-C и запасом, но без цены последнего поколения.”</div>
+        <div class="swatches">
+          <span class="swatch"><span class="dot" style="--c:#5367d6"></span>Ultramarine</span>
+          <span class="swatch"><span class="dot" style="--c:#4ba69b"></span>Teal</span>
+          <span class="swatch"><span class="dot" style="--c:#f7aac6"></span>Pink</span>
+          <span class="swatch"><span class="dot" style="--c:#f4f4ef"></span>White</span>
+          <span class="swatch"><span class="dot" style="--c:#1d1d1f"></span>Black</span>
+        </div>
+        <details open><summary>Что обязательно донести по 16-й линейке</summary><ul>
+          <li><strong>16e:</strong> не “плохой iPhone”, а вход в современную платформу для клиента с ограниченным бюджетом.</li>
+          <li><strong>16 / 16 Plus:</strong> хороший баланс; Plus объяснять через большой экран и автономность, не через Pro-функции.</li>
+          <li><strong>16 Pro / Pro Max:</strong> продавать через 120 Гц, камеры, видео, запас мощности и более премиальное ощущение.</li>
+          <li><strong>Память:</strong> если клиент снимает детей, поездки и видео, 128 ГБ быстро станет раздражением.</li>
+        </ul></details>
+      </section>
+
+      <section id="iphone-15" data-searchable>
+        <div class="branch-head"><div><h2>iPhone 15: 15, 15 Plus, 15 Pro, 15 Pro Max</h2><p class="section-note">Первая массовая ветка с USB-C. Для стажера это главный мост между старым Lightning-миром и современными аксессуарами.</p></div><span class="branch-tag">iPhone 15</span></div>
+        <div class="grid">
+          <article class="card"><h3>15 / 15 Plus</h3><p>USB-C, Dynamic Island, 48 МП основная камера. Plus продается через экран и батарею.</p><div class="benefit"><strong>Выгода:</strong> один кабель с iPad, MacBook и AirPods.</div></article>
+          <article class="card"><h3>15 Pro</h3><p>Титан, ProMotion, Action Button, Pro-камера. Хороший вариант б.у., если состояние чистое.</p><div class="say"><strong>Фраза:</strong> “Это уже Pro-ощущение, но цена обычно приятнее новых флагманов.”</div></article>
+          <article class="card"><h3>15 Pro Max</h3><p>Сильный Pro Max с большим экраном, батареей и продвинутым зумом. Часто интересен тем, кто снимает людей, детей, поездки.</p><div class="warn"><strong>Проверить:</strong> батарея, камеры, дисплей, перегрев в тяжелых задачах, следы ремонта.</div></article>
+        </div>
+        <div class="swatches">
+          <span class="swatch"><span class="dot" style="--c:#f3c8d4"></span>Pink</span>
+          <span class="swatch"><span class="dot" style="--c:#f5e488"></span>Yellow</span>
+          <span class="swatch"><span class="dot" style="--c:#cfe7cf"></span>Green</span>
+          <span class="swatch"><span class="dot" style="--c:#c8d7e8"></span>Blue</span>
+          <span class="swatch"><span class="dot" style="--c:#242426"></span>Black</span>
+          <span class="swatch"><span class="dot" style="--c:#b9b3a9"></span>Natural Titanium</span>
+          <span class="swatch"><span class="dot" style="--c:#3c4658"></span>Blue Titanium</span>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Сравнение</th><th>Ответ клиенту</th><th>Что проверить при б.у.</th></tr></thead><tbody>
+          <tr><td>15 vs 14</td><td>15-й ощущается современнее: USB-C, Dynamic Island, камера 48 МП.</td><td>Оригинальность дисплея, Face ID, батарея, регион.</td></tr>
+          <tr><td>15 Plus vs 15 Pro</td><td>Plus - экран и батарея дешевле; Pro - плавность, камеры и премиальность.</td><td>Для Pro особенно проверить камеры и следы ремонта.</td></tr>
+          <tr><td>15 Pro vs 16 Pro</td><td>15 Pro выгоднее по цене, 16 Pro свежее и дольше актуален.</td><td>Сравнить состояние и остаток батареи, не только цену.</td></tr>
+        </tbody></table></div>
+      </section>
+
+      <section id="iphone-14" data-searchable>
+        <div class="branch-head"><div><h2>iPhone 14: 14, 14 Plus, 14 Pro, 14 Pro Max</h2><p class="section-note">Ветка “еще норм, но уже честно старше”. Отлично работает в трейд-ин и б.у., если правильно проговорить Lightning, батарею и состояние.</p></div><span class="branch-tag">iPhone 14</span></div>
+        <div class="grid">
+          <article class="card"><h3>14 / 14 Plus</h3><p>Хорошая база, но без USB-C и без Dynamic Island. Plus интересен автономностью и большим экраном.</p><div class="say"><strong>Фраза:</strong> “Если важны экран и батарея за меньшие деньги, 14 Plus еще может быть удачным.”</div></article>
+          <article class="card"><h3>14 Pro / Pro Max</h3><p>Dynamic Island, ProMotion, Always-On, 48 МП. Это поколение резко отличает Pro от обычного 14.</p><div class="benefit"><strong>Выгода:</strong> клиент получает многие современные ощущения дешевле 15/16/17 Pro.</div></article>
+          <article class="card"><h3>Что проверять</h3><p>Аккумулятор, Face ID, True Tone, дисплей, камеры, регион, физическую SIM/eSIM, Find My, следы вскрытия.</p><div class="warn"><strong>Стоп:</strong> не принимать и не продавать без проверки Apple ID / Find My.</div></article>
+        </div>
+        <div class="swatches">
+          <span class="swatch"><span class="dot" style="--c:#a7c1dc"></span>Blue</span>
+          <span class="swatch"><span class="dot" style="--c:#d8c4e8"></span>Purple</span>
+          <span class="swatch"><span class="dot" style="--c:#f2dc62"></span>Yellow</span>
+          <span class="swatch"><span class="dot" style="--c:#2f3642"></span>Midnight</span>
+          <span class="swatch"><span class="dot" style="--c:#f2f1eb"></span>Starlight</span>
+          <span class="swatch"><span class="dot" style="--c:#b91c2b"></span>PRODUCT(RED)</span>
+          <span class="swatch"><span class="dot" style="--c:#5b536d"></span>Deep Purple Pro</span>
+          <span class="swatch"><span class="dot" style="--c:#f4dfb4"></span>Gold Pro</span>
+        </div>
+        <details><summary>Как честно продавать 14-ю линейку</summary><p>Не делать вид, что это “почти новый актуальный флагман”. Правильная подача: хорошая цена, понятный iPhone, но Lightning и возраст. Pro-модели объяснять через Dynamic Island и 120 Гц; обычные - через бюджет и надежность.</p></details>
+      </section>
+
+      <section id="iphone-13" data-searchable>
+        <div class="branch-head"><div><h2>iPhone 13: 13 mini, 13, 13 Pro, 13 Pro Max</h2><p class="section-note">Минимальный разумный вход в современный iPhone. Хорош для бюджета, но возраст уже надо проговаривать спокойно и честно.</p></div><span class="branch-tag">iPhone 13</span></div>
+        <div class="table-wrap"><table><thead><tr><th>Модель</th><th>Почему берут</th><th>Что объяснить</th><th>Риск</th></tr></thead><tbody>
+          <tr><td>13 mini</td><td>Компактность</td><td>Уникальный маленький размер</td><td>Батарея слабее, чем у больших</td></tr>
+          <tr><td>13</td><td>Цена и надежная база</td><td>OLED, нормальная камера, привычный iPhone</td><td>Lightning, возраст, батарея</td></tr>
+          <tr><td>13 Pro</td><td>120 Гц и Pro-камера дешевле</td><td>Плавность экрана заметна сразу</td><td>Состояние дисплея и батареи</td></tr>
+          <tr><td>13 Pro Max</td><td>Большой экран и батарея</td><td>Все еще приятный крупный Pro</td><td>Вес, возраст, ремонтопригодность конкретного экземпляра</td></tr>
+        </tbody></table></div>
+        <div class="warn"><strong>Главное для стажера:</strong> iPhone 13 уже продается не как “новинка”, а как бюджетный вход. Если батарея уставшая или были ремонты, выгода цены быстро исчезает.</div>
+        <div class="swatches">
+          <span class="swatch"><span class="dot" style="--c:#4f7b5d"></span>Green</span>
+          <span class="swatch"><span class="dot" style="--c:#f4c6d1"></span>Pink</span>
+          <span class="swatch"><span class="dot" style="--c:#276787"></span>Blue</span>
+          <span class="swatch"><span class="dot" style="--c:#2f3642"></span>Midnight</span>
+          <span class="swatch"><span class="dot" style="--c:#f2f1eb"></span>Starlight</span>
+          <span class="swatch"><span class="dot" style="--c:#b91c2b"></span>PRODUCT(RED)</span>
+          <span class="swatch"><span class="dot" style="--c:#8ca58c"></span>Alpine Green Pro</span>
+          <span class="swatch"><span class="dot" style="--c:#9bb0c8"></span>Sierra Blue Pro</span>
+        </div>
+      </section>
+
+      <section id="ipad-branch" data-searchable>
+        <div class="branch-head"><div><h2>iPad: iPad 11, Air 11/13 M4, Pro 11/13 M5</h2><p class="section-note">iPad продается не от “самый мощный”, а от сценария: учеба, дети, заметки, рисование, монтаж, замена ноутбука, второй экран.</p></div><span class="branch-tag">ветка iPad</span></div>
+        <div class="visual">
+          <img src="https://www.apple.com/v/ipad-11/d/images/overview/hero/hero__crzh9misvcuq_large.jpg" alt="iPad 11 в цветах Blue, Pink, Yellow и Silver">
+          <div>
+            <h3>iPad 11: базовая ветка</h3>
+            <p>Apple позиционирует iPad 11 как 11-дюймовый Liquid Retina планшет с A16, стартом от 128 ГБ, Apple Pencil и Magic Keyboard Folio. Это не “слабый iPad”, а простой вход для учебы, детей, видео, заметок, кассы и базовой работы.</p>
+            <div class="swatches">
+              <span class="swatch"><span class="dot" style="--c:#a8c4dc"></span>Blue</span>
+              <span class="swatch"><span class="dot" style="--c:#f15d83"></span>Pink</span>
+              <span class="swatch"><span class="dot" style="--c:#e4c72d"></span>Yellow</span>
+              <span class="swatch"><span class="dot" style="--c:#d8d8d2"></span>Silver</span>
+            </div>
+            <div class="say"><strong>Фраза:</strong> “Это iPad для нормальной жизни: учиться, смотреть, писать, рисовать, не переплачивая за Pro.”</div>
+          </div>
+        </div>
+        <h3>Картинки по цветам: iPad 11</h3>
+        <div class="color-gallery">
+          <article class="color-card"><img src="https://www.apple.com/v/ipad-11/d/images/overview/hero/hero__crzh9misvcuq_large.jpg" alt="iPad 11 все цвета"><strong>iPad 11: Blue / Pink / Yellow / Silver</strong><span>Apple отдаёт общий hero-кадр со всеми цветами. В продаже обязательно сверять конкретный SKU.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/ipad-11/d/images/overview/design/fan_snipe2__f0q2la4piu6i_large.png" alt="iPad 11 цветовая веерная раскладка"><strong>iPad 11: визуальная раскладка</strong><span>Полезно для объяснения подарочных цветов и базовой линейки.</span></article>
+        </div>
+        <div class="visual">
+          <img src="https://www.apple.com/v/ipad-air/ah/images/overview/closer-look/all-colors/slide_1A__u8zw91uc6iaq_large.jpg" alt="iPad Air M4 во всех цветах">
+          <div>
+            <h3>iPad Air 11/13 M4: универсальная ветка</h3>
+            <p>Air - главный “разумный мощный iPad”. Apple делает акцент на M4, 11- и 13-дюймовых Liquid Retina дисплеях, Apple Intelligence, Apple Pencil Pro и Magic Keyboard. Для зала это лучший ответ “хочу надолго, но Pro дорогой”.</p>
+            <div class="swatches">
+              <span class="swatch"><span class="dot" style="--c:#73777d"></span>Space Gray</span>
+              <span class="swatch"><span class="dot" style="--c:#b7d9e7"></span>Blue</span>
+              <span class="swatch"><span class="dot" style="--c:#d8c9e8"></span>Purple</span>
+              <span class="swatch"><span class="dot" style="--c:#eee9dc"></span>Starlight</span>
+            </div>
+            <div class="benefit"><strong>Выгода:</strong> Air 11 - мобильность, Air 13 - большое рабочее поле без цены Pro.</div>
+          </div>
+        </div>
+        <h3>Картинки по цветам: iPad Air M4</h3>
+        <div class="color-gallery">
+          <article class="color-card"><img src="https://www.apple.com/v/ipad-air/ah/images/overview/closer-look/all-colors/slide_1A__u8zw91uc6iaq_large.jpg" alt="iPad Air M4 all colors"><strong>iPad Air M4: все цвета</strong><span>Space Gray, Blue, Purple, Starlight.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/ipad-air/ah/images/overview/closer-look/all-colors/slide_2A__p74br7miwoiq_large.jpg" alt="iPad Air M4 Space Gray and Blue"><strong>Air M4: Space Gray / Blue</strong><span>Спокойные цвета для учебы и работы.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/ipad-air/ah/images/overview/closer-look/all-colors/slide_2B__dvqfqwnkj2c2_large.jpg" alt="iPad Air M4 Purple and Starlight"><strong>Air M4: Purple / Starlight</strong><span>Более подарочные и мягкие варианты.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/ipad-air/ah/images/overview/apple-pencil-pro/modal/charging__fkj24ywhsyum_large.jpg" alt="iPad Air with Apple Pencil Pro"><strong>Air M4 + Pencil Pro</strong><span>Картинка для продажи сценария заметок и рисования.</span></article>
+        </div>
+        <div class="visual">
+          <img src="https://www.apple.com/v/ipad-pro/aw/images/overview/design/modal/colors__bl5t08cd9wr6_large.jpg" alt="iPad Pro M5 в цветах Silver и Space Black">
+          <div>
+            <h3>iPad Pro 11/13 M5: профессиональная ветка</h3>
+            <p>Pro нужен, когда клиент реально ценит лучший экран, производительность M5, тонкий корпус, творческие приложения, монтаж, дизайн и работу с файлами. Не продавать Pro человеку, которому нужен YouTube и конспекты.</p>
+            <div class="swatches">
+              <span class="swatch"><span class="dot" style="--c:#d8d8d2"></span>Silver</span>
+              <span class="swatch"><span class="dot" style="--c:#2b2928"></span>Space Black</span>
+            </div>
+            <div class="warn"><strong>Стоп:</strong> Pro без Pencil/клавиатуры часто раскрывается не полностью. Сразу обсуждать аксессуары.</div>
+          </div>
+        </div>
+        <h3>Картинки по цветам: iPad Pro M5</h3>
+        <div class="color-gallery">
+          <article class="color-card"><img src="https://www.apple.com/v/ipad-pro/aw/images/overview/design/modal/colors__bl5t08cd9wr6_large.jpg" alt="iPad Pro M5 Silver and Space Black"><strong>iPad Pro M5: Silver / Space Black</strong><span>Apple даёт общий кадр двух цветов. Это профессиональная, сдержанная палитра.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/ipad-pro/aw/images/overview/design/modal/colors__bl5t08cd9wr6_large.jpg" alt="iPad Pro M5 Silver and Space Black second view"><strong>iPad Pro: 11 / 13</strong><span>Нюанс продажи: Pro дорогой не только из-за чипа, но и из-за экрана/корпуса.</span></article>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Модель</th><th>Экран/чип</th><th>Кому</th><th>Аксессуары</th><th>Что сказать</th></tr></thead>
+            <tbody>
+              <tr><td>iPad 11</td><td>11” Liquid Retina, A16</td><td>Учеба, дети, видео, документы, касса/зал</td><td>Apple Pencil, Magic Keyboard Folio, Smart Folio</td><td>“Если нужен планшет Apple без профессиональных задач, это нормальная база.”</td></tr>
+              <tr><td>iPad Air 11 M4</td><td>11” Liquid Retina, M4</td><td>Учеба, заметки, рисование, работа</td><td>Apple Pencil Pro, Apple Pencil USB-C, Magic Keyboard</td><td>“Air 11 берут, когда нужен мощный iPad, но компактный.”</td></tr>
+              <tr><td>iPad Air 13 M4</td><td>13” Liquid Retina, M4</td><td>Презентации, рисование, документы, второй экран</td><td>Magic Keyboard, Pencil Pro, чехол</td><td>“13 дюймов дают почти ноутбучное поле, но без цены Pro.”</td></tr>
+              <tr><td>iPad Pro 11 M5</td><td>11” Ultra Retina XDR, M5</td><td>Дизайн, монтаж, фото, профи в компактном формате</td><td>Pencil Pro, Magic Keyboard, внешний SSD</td><td>“Pro 11 - экран и мощность, но планшет надо носить.”</td></tr>
+              <tr><td>iPad Pro 13 M5</td><td>13” Ultra Retina XDR, M5</td><td>Рабочая станция, творчество, презентации</td><td>Magic Keyboard обязателен к обсуждению</td><td>“Это уже не просто планшет, а рабочий инструмент.”</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <h3>Apple Pencil</h3>
+            <p>Перед продажей всегда сверять поколение Pencil с конкретным iPad. У Apple несколько Pencil, и визуально ошибка легко стоит возврата.</p>
+            <div class="warn"><strong>Стоп-сигнал:</strong> “Pencil подходит ко всем iPad” говорить нельзя.</div>
+          </article>
+          <article class="card">
+            <h3>Air или Pro</h3>
+            <p>Air закрывает 80% сценариев. Pro нужен, когда важны лучший экран, запас мощности, работа с тяжелыми файлами и максимальная плавность.</p>
+            <div class="say"><strong>Фраза:</strong> “Air — рациональный выбор. Pro — когда планшет становится рабочим инструментом.”</div>
+          </article>
+          <article class="card">
+            <h3>Wi‑Fi или Cellular</h3>
+            <p>Cellular нужен, если планшет часто вне дома без раздачи интернета. Для дома, учебы и офиса обычно хватает Wi‑Fi.</p>
+            <div class="benefit"><strong>Выгода:</strong> клиент не переплачивает за модуль, которым не будет пользоваться.</div>
+          </article>
+        </div>
+        <details open><summary>Как выбрать iPad за 60 секунд</summary><ul>
+          <li><strong>iPad 11:</strong> если нужен планшет Apple для учебы, видео, детей и простых задач.</li>
+          <li><strong>Air 11 M4:</strong> если нужен мощный, но легкий универсальный iPad с запасом.</li>
+          <li><strong>Air 13 M4:</strong> если клиент хочет большой экран для учебы, документов, рисования и презентаций без цены Pro.</li>
+          <li><strong>Pro 11 M5:</strong> если важны экран, мощность и мобильность в профессиональном сценарии.</li>
+          <li><strong>Pro 13 M5:</strong> если iPad реально заменяет рабочее место для творчества, монтажа, дизайна или презентаций.</li>
+        </ul></details>
+        <div class="chips"><span class="chip">Pencil сверять отдельно</span><span class="chip">11 = мобильность</span><span class="chip">13 = рабочее поле</span><span class="chip">Air = баланс</span><span class="chip">Pro = экран и мощность</span></div>
+      </section>
+
+      <section id="macbook-branch" data-searchable>
+        <div class="branch-head"><div><h2>MacBook: актуальная линейка</h2><p class="section-note">MacBook продаем через задачу: учеба, офис, монтаж, разработка, дизайн, мобильность. Важный вопрос стажера: Air хватит или нужен Pro?</p></div><span class="branch-tag">ветка MacBook</span></div>
+        <div class="visual">
+          <img src="https://www.apple.com/v/macbook-air/z/images/overview/design/color/design_top_skyblue__eepkvlvjzcia_large.jpg" alt="MacBook Air M5 Sky Blue">
+          <div>
+            <h3>MacBook Air 13/15 M5</h3>
+            <p>Apple делает акцент на M5, тихом fanless-дизайне, 13- и 15-дюймовых размерах и повседневной скорости. Air - это не “слабый Mac”, а лучший MacBook для учебы, офиса, поездок, браузера, фото и легкого монтажа.</p>
+            <div class="swatches">
+              <span class="swatch"><span class="dot" style="--c:#b7d3df"></span>Sky Blue</span>
+              <span class="swatch"><span class="dot" style="--c:#d8d8d2"></span>Silver</span>
+              <span class="swatch"><span class="dot" style="--c:#eee9dc"></span>Starlight</span>
+              <span class="swatch"><span class="dot" style="--c:#2f3642"></span>Midnight</span>
+            </div>
+            <div class="say"><strong>Фраза:</strong> “Air берут, когда ноутбук каждый день с собой и не хочется переплачивать за мощность, которую не загрузят.”</div>
+          </div>
+        </div>
+        <h3>Картинки по цветам: MacBook Air M5</h3>
+        <div class="color-gallery">
+          <article class="color-card"><img src="https://www.apple.com/v/macbook-air/z/images/overview/design/color/design_top_skyblue__eepkvlvjzcia_large.jpg" alt="MacBook Air Sky Blue"><strong>MacBook Air Sky Blue</strong><span>Самый новый визуальный цвет, хорошо отличает M5 Air.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/macbook-air/z/images/overview/design/color/design_top_silver__dcf8hwixw2uu_large.jpg" alt="MacBook Air Silver"><strong>MacBook Air Silver</strong><span>Классика Apple, проще для корпоративных клиентов.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/macbook-air/z/images/overview/design/color/design_top_starlight__dtojfd6ibywm_large.jpg" alt="MacBook Air Starlight"><strong>MacBook Air Starlight</strong><span>Мягкий светлый, часто выбирают как подарок.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/macbook-air/z/images/overview/design/color/design_top_midnight__fvf2p6124tqq_large.jpg" alt="MacBook Air Midnight"><strong>MacBook Air Midnight</strong><span>Строгий тёмный цвет; предупредить про заметность отпечатков.</span></article>
+        </div>
+        <div class="visual">
+          <img src="https://www.apple.com/v/macbook-pro/ax/images/overview/contrast/macbook_pro_14_16__ns1ipedt40qm_large.png" alt="MacBook Pro 14 и 16">
+          <div>
+            <h3>MacBook Pro 14/16 M5, M5 Pro, M5 Max</h3>
+            <p>Pro - это экран Liquid Retina XDR, активное охлаждение, больше портов, дольше высокая производительность под нагрузкой и конфигурации для тяжелых задач. Его не надо продавать всем: он нужен тем, у кого работа реально грузит ноутбук.</p>
+            <div class="swatches">
+              <span class="swatch"><span class="dot" style="--c:#222222"></span>Space Black</span>
+              <span class="swatch"><span class="dot" style="--c:#d8d8d2"></span>Silver</span>
+            </div>
+            <div class="benefit"><strong>Выгода:</strong> Pro держит скорость, когда Air уже будет упираться в тепло и длительную нагрузку.</div>
+          </div>
+        </div>
+        <h3>Картинки по цветам: MacBook Pro M5</h3>
+        <div class="color-gallery">
+          <article class="color-card"><img src="https://www.apple.com/v/macbook-pro/ax/images/overview/product-viewer/pv_colors_spaceblack__dwfpyrbaf4cy_large.jpg" alt="MacBook Pro Space Black"><strong>MacBook Pro Space Black</strong><span>Более строгий и “профессиональный” визуально.</span></article>
+          <article class="color-card"><img src="https://www.apple.com/v/macbook-pro/ax/images/overview/product-viewer/pv_colors_silver__doa20s4tupaq_large.jpg" alt="MacBook Pro Silver"><strong>MacBook Pro Silver</strong><span>Классический MacBook Pro, хорошо переносит следы использования визуально.</span></article>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Модель</th><th>Экран/чип</th><th>Кому</th><th>Что объяснить</th><th>Апсейл</th></tr></thead><tbody>
+          <tr><td>MacBook Air 13 M5</td><td>13”, M5, fanless</td><td>Учеба, офис, поездки</td><td>Самый универсальный легкий MacBook</td><td>512 ГБ SSD и больше памяти, если надолго</td></tr>
+          <tr><td>MacBook Air 15 M5</td><td>15”, M5, fanless</td><td>Нужен большой экран без Pro</td><td>Комфортнее для таблиц, учебы, фильмов, многозадачности</td><td>Хорошая альтернатива Pro, если нет тяжелой нагрузки</td></tr>
+          <tr><td>MacBook Pro 14 M5</td><td>14.2” XDR, M5</td><td>Работа, разработка, фото, монтаж</td><td>Больше портов, лучший экран, охлаждение</td><td>Больше RAM/SSD, если проекты тяжелые</td></tr>
+          <tr><td>MacBook Pro 14 M5 Pro/Max</td><td>14.2” XDR, M5 Pro/Max</td><td>Профи, монтаж, 3D, код, музыка</td><td>Держит нагрузку дольше и стабильнее</td><td>Выбирать чип под задачу, а не “самый дорогой”</td></tr>
+          <tr><td>MacBook Pro 16 M5 Pro/Max</td><td>16.2” XDR, M5 Pro/Max</td><td>Максимальный экран и автономность</td><td>Рабочая машина вместо стационарного компьютера</td><td>Вес и цена, но лучший комфорт для долгой работы</td></tr>
+        </tbody></table></div>
+        <div class="grid">
+          <article class="card"><h3>Air или Pro</h3><p>Air берут, когда ноутбук каждый день носят с собой. Pro нужен, если ноутбук часто под нагрузкой и экран важен как рабочий инструмент.</p><div class="say">“Air быстрый для обычной жизни. Pro нужен, когда нагрузка длится часами.”</div></article>
+          <article class="card"><h3>RAM</h3><p>Память потом не добавить. Для браузера, офисных задач и учебы минимум ок, но для долгого срока лучше брать запас.</p><div class="benefit">Запас памяти продлевает комфорт владения.</div></article>
+          <article class="card"><h3>SSD</h3><p>256 ГБ быстро заканчиваются у тех, кто хранит фото, видео, проекты и офлайн-файлы. 512 ГБ спокойнее.</p><div class="warn">Не продавать 256 ГБ человеку с монтажом и фотоархивом.</div></article>
+        </div>
+        <details open><summary>Вопросы перед продажей MacBook</summary><ul>
+          <li>Будет ли внешний монитор, сколько экранов и какие порты нужны?</li>
+          <li>Что тяжелее всего делает клиент: монтаж, Xcode, 3D, музыка, фото, браузер?</li>
+          <li>Носит каждый день или стоит дома? Это решает Air 13 / Air 15 / Pro 14 / Pro 16.</li>
+          <li>Сколько лет хочет пользоваться? Для долгого срока лучше запас RAM и SSD.</li>
+        </ul></details>
+      </section>
+
+      <section id="watch-branch" data-searchable>
+        <div class="branch-head"><div><h2>Apple Watch</h2><p class="section-note">Часы продаются через здоровье, тренировки, уведомления, безопасность и привычку меньше доставать iPhone. Не продавать как “маленький телефон”.</p></div><span class="branch-tag">ветка Watch</span></div>
+        <div class="visual compact">
+          <img src="https://www.apple.com/v/apple-watch-series-11/c/images/overview/product-viewer/product_landing_endframe__eaytrp6zz6c2_large.jpg" alt="Apple Watch Series 11">
+          <div>
+            <h3>Series 11, SE 3, Ultra 3</h3>
+            <p>По Apple: Series 11 - основная ветка здоровья, SE 3 - базовые функции по хорошей цене, Ultra 3 - спорт и приключения. Не обещаем медицинскую диагностику: говорим “уведомления, трекинг, инсайты”, а не “лечит”.</p>
+            <div class="swatches">
+              <span class="swatch"><span class="dot" style="--c:#b78e7f"></span>Rose Gold</span>
+              <span class="swatch"><span class="dot" style="--c:#d8d8d2"></span>Silver</span>
+              <span class="swatch"><span class="dot" style="--c:#111"></span>Jet Black</span>
+              <span class="swatch"><span class="dot" style="--c:#787878"></span>Space Gray</span>
+              <span class="swatch"><span class="dot" style="--c:#c8b89a"></span>Natural</span>
+              <span class="swatch"><span class="dot" style="--c:#d5b46a"></span>Gold</span>
+              <span class="swatch"><span class="dot" style="--c:#5b6269"></span>Slate</span>
+            </div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Модель</th><th>Кому</th><th>Главное отличие</th><th>Как объяснить</th></tr></thead>
+            <tbody>
+              <tr><td>Apple Watch SE</td><td>Первые часы, подросток, подарок</td><td>Базовые функции без дорогих датчиков</td><td>Самый доступный способ войти в экосистему Watch.</td></tr>
+              <tr><td>Apple Watch Series</td><td>Большинство пользователей</td><td>Больше датчиков здоровья, лучший экран, актуальные функции</td><td>Оптимум для повседневного здоровья и уведомлений.</td></tr>
+              <tr><td>Apple Watch Ultra</td><td>Спорт, туризм, большая автономность</td><td>Крупный корпус, яркий экран, прочность, дольше батарея</td><td>Выбор для тех, кто хочет максимум и крупный формат.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="grid">
+          <article class="card wide">
+            <h3>Совместимость с iPhone</h3>
+            <p>Apple Watch требуют iPhone. При продаже б.у. важно уточнить версию watchOS и iOS, потому что слишком старый iPhone может не активировать новые часы.</p>
+            <div class="warn"><strong>Стоп-сигнал:</strong> не обещать совместимость “с любым iPhone”.</div>
+          </article>
+          <article class="card wide">
+            <h3>GPS или Cellular</h3>
+            <p>GPS работает рядом с iPhone или Wi‑Fi. Cellular позволяет звонки, сообщения и музыку без телефона, но требует eSIM-поддержку оператора.</p>
+            <div class="benefit"><strong>Выгода:</strong> для пробежек и спорта без телефона Cellular реально меняет сценарий.</div>
+          </article>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Вопрос клиента</th><th>Ответ стажера</th><th>Куда вести</th></tr></thead><tbody>
+          <tr><td>“Мне просто уведомления и шаги”</td><td>SE часто достаточно.</td><td>Apple Watch SE</td></tr>
+          <tr><td>“Хочу здоровье, экран получше, каждый день”</td><td>Series - оптимальный основной выбор.</td><td>Apple Watch Series</td></tr>
+          <tr><td>“Спорт, походы, большая батарея”</td><td>Ultra создан под крупный корпус, яркий экран и автономность.</td><td>Apple Watch Ultra</td></tr>
+        </tbody></table></div>
+      </section>
+
+      <section id="accessories-branch" data-searchable>
+        <div class="branch-head"><div><h2>Аксессуары Apple</h2><p class="section-note">Аксессуары не “допы ради чека”, а закрытие сценария: защита, зарядка, ввод, звук, поиск вещей, ремешки. Главное - совместимость.</p></div><span class="branch-tag">ветка аксессуары</span></div>
+        <div class="model-matrix">
+          <article class="model-card"><h3>iPhone</h3><p>Чехол, стекло, адаптер USB-C, MagSafe/Qi2, кабель USB-C, AirPods, AirTag.</p><div class="warn">Сверить: модель, MagSafe, мощность зарядки, тип кабеля.</div></article>
+          <article class="model-card"><h3>iPad</h3><p>Apple Pencil, Magic Keyboard, Smart Folio, USB-C хаб, стекло, чехол, внешний SSD.</p><div class="warn">Сверить: конкретный iPad и поколение Pencil/клавиатуры.</div></article>
+          <article class="model-card"><h3>MacBook</h3><p>Хаб USB-C/Thunderbolt, внешний SSD, мышь/трекпад, клавиатура, рукав, адаптер питания.</p><div class="warn">Сверить: порты, мощность адаптера, раскладку клавиатуры.</div></article>
+          <article class="model-card"><h3>Watch</h3><p>Ремешки, зарядка, защитные аксессуары, AirPods для спорта, Cellular-сценарий.</p><div class="warn">Сверить: размер корпуса, крепление ремешка, оператор eSIM.</div></article>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Категория</th><th>Что входит</th><th>Когда предлагать</th><th>Главная проверка</th></tr></thead>
+            <tbody>
+              <tr><td>Зарядка</td><td>USB-C адаптеры, кабели, MagSafe, Qi2, 2-в-1/3-в-1 доки</td><td>При продаже iPhone, Watch, AirPods, MacBook</td><td>Мощность, кабель, разъем, поддержка MagSafe/Qi2</td></tr>
+              <tr><td>Защита</td><td>Чехлы, стекла, пленки, сумки, рукава</td><td>Сразу с устройством, особенно Pro Max и iPad</td><td>Точная модель и диагональ</td></tr>
+              <tr><td>iPad ввод</td><td>Apple Pencil, Magic Keyboard, Smart Folio</td><td>Учеба, рисование, документы</td><td>Совместимость Pencil/клавиатуры с конкретным iPad</td></tr>
+              <tr><td>Mac ввод</td><td>Magic Mouse, Magic Trackpad, Magic Keyboard, хабы</td><td>Рабочее место и внешний монитор</td><td>Порты USB-C/Thunderbolt, раскладка клавиатуры</td></tr>
+              <tr><td>AirTag</td><td>Метка и держатели</td><td>Ключи, сумки, багаж, детские рюкзаки</td><td>Нужен iPhone и Apple ID</td></tr>
+              <tr><td>Watch ремешки</td><td>Sport Band, Sport Loop, Milanese, кожаные/тканевые</td><td>Подарок, спорт, стиль</td><td>Размер корпуса и совместимость крепления</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="grid">
+          <article class="card"><h3>MagSafe</h3><p>Магнитная экосистема для iPhone: зарядки, держатели, кошельки, пауэрбанки. Уточнять поддержку модели и мощность.</p><div class="benefit">Сценарий: зарядка на столе, в машине, у кровати.</div></article>
+          <article class="card"><h3>Apple Pencil</h3><p>Самая частая ошибка - продать не тот Pencil. Проверять модель iPad, поколение Pencil и способ крепления/зарядки.</p><div class="warn">Не говорить “любой Pencil подойдет”.</div></article>
+          <article class="card"><h3>AirTag</h3><p>Работает как метка для вещей через сеть Локатора. Не GPS-трекер в прямом смысле и не замена сигнализации.</p><div class="say">“Это чтобы быстрее найти вещь, а не чтобы следить за человеком.”</div></article>
+        </div>
+        <details open><summary>Аксессуарная логика для чека</summary><ul>
+          <li><strong>iPhone:</strong> чехол, стекло, USB-C адаптер, MagSafe/Qi2, кабель, AirPods, AirTag.</li>
+          <li><strong>iPad:</strong> Pencil, клавиатура, чехол, стекло, USB-C хаб, зарядка.</li>
+          <li><strong>MacBook:</strong> хаб, мышь/трекпад, клавиатура, рукав, внешний SSD, адаптер питания.</li>
+          <li><strong>Watch:</strong> ремешок под сценарий, зарядка, защитное стекло/кейс, Cellular только при понимании eSIM.</li>
+        </ul></details>
+      </section>
+
+      <section id="airpods" data-searchable>
+        <div class="branch-head"><div><h2>AirPods</h2><p class="section-note">AirPods оставил отдельной аудио-веткой внутри аксессуаров: посадка, шумоподавление, звонки, экосистема и кейс.</p></div><span class="branch-tag">аудио</span></div>
+        <div class="visual compact">
+          <img src="https://www.apple.com/v/airpods/ae/images/overview/airpods_max_purple__d9y3g3n7cnyq_large_2x.png" alt="AirPods Max 2">
+          <div>
+            <h3>AirPods 4, AirPods 4 ANC, AirPods Pro 3, AirPods Max 2</h3>
+            <p>Главная развилка: открытая посадка или внутриканальная, нужен ли ANC, нужна ли тренировка/датчик пульса, нужен ли полноразмерный формат. Не продавать Pro человеку, который физически не переносит амбушюры.</p>
+            <div class="benefit"><strong>Выгода:</strong> AirPods продаются через комфорт каждый день: звонки, транспорт, спорт, офис, переключение между Apple-устройствами.</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Модель</th><th>Сценарий</th><th>Сильная сторона</th><th>Компромисс</th></tr></thead>
+            <tbody>
+              <tr><td>AirPods базовые</td><td>Звонки, музыка, повседневно</td><td>Простота, открытая посадка</td><td>Шумоизоляция слабее</td></tr>
+              <tr><td>AirPods Pro</td><td>Метро, самолет, офис, спорт</td><td>Активное шумоподавление, амбушюры, адаптивные режимы</td><td>Не всем нравится внутриканальная посадка</td></tr>
+              <tr><td>AirPods Max</td><td>Дом, офис, максимальный звук и комфорт</td><td>Большие чашки, сильное шумоподавление</td><td>Размер, вес, цена</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="grid">
+          <article class="card wide">
+            <h3>Шумоподавление</h3>
+            <p>ANC не “делает тишину”, а снижает постоянный шум: транспорт, кондиционер, гул офиса. Речь и резкие звуки все равно могут быть слышны.</p>
+            <div class="benefit"><strong>Выгода:</strong> меньше усталости в дороге и проще слушать тише.</div>
+          </article>
+          <article class="card wide">
+            <h3>Пространственное аудио</h3>
+            <p>Эффект объема в поддерживаемом контенте. Хорошо демонстрировать на видео или музыке, но не обещать, что “везде будет кинотеатр”.</p>
+            <div class="say"><strong>Фраза:</strong> “Это фишка для контента, где объем реально записан или поддерживается приложением.”</div>
+          </article>
+        </div>
+      </section>
+
+      <section id="compare" data-searchable>
+        <h2>Быстрые отличия</h2>
+        <div class="table-wrap"><table><thead><tr><th>Развилка</th><th>Главное отличие</th><th>Нюанс модели</th><th>Кому не подходит</th></tr></thead><tbody>
+          <tr><td>iPhone 17e vs 17</td><td>17 - более полноценная основная модель; 17e - вход в линейку дешевле.</td><td>17e продавать аккуратно: это не Pro и не “тот же 17 дешевле”.</td><td>Тем, кто хочет максимум камер, экрана и памяти.</td></tr>
+          <tr><td>iPhone 17 vs Air</td><td>17 - рациональный базовый выбор; Air - тонкость и ощущение в руке.</td><td>Air продаётся через дизайн, не через “лучше камера”.</td><td>Тем, кому важна максимальная камера и батарея.</td></tr>
+          <tr><td>iPhone Air vs 17 Pro</td><td>Air легче и тоньше; Pro сильнее по экрану, камерам и запасу.</td><td>Не спорить “что лучше”, спрашивать сценарий: красота/вес или камера/Pro.</td><td>Air не для тех, кто покупает ради камеры.</td></tr>
+          <tr><td>iPhone 17 Pro vs Pro Max</td><td>Pro Max - больше экран и батарея; Pro - компактнее.</td><td>Pro Max часто выбирают те, кто много смотрит, снимает и ездит.</td><td>Pro Max не всем удобен по размеру и весу.</td></tr>
+          <tr><td>iPad 11 vs Air M4</td><td>Air мощнее, лучше как долгий универсальный выбор.</td><td>iPad 11 - база; Air - запас и аксессуары.</td><td>iPad 11 не для тяжёлого творчества.</td></tr>
+          <tr><td>iPad Air 13 vs Pro 13</td><td>Air 13 - большой экран разумно; Pro 13 - лучший экран и M5.</td><td>Pro оправдан, если клиент видит пользу экрана/мощности.</td><td>Pro не нужен для YouTube и конспектов.</td></tr>
+          <tr><td>MacBook Air vs Pro</td><td>Air - лёгкий и тихий; Pro - экран, порты, охлаждение, длительная нагрузка.</td><td>Air быстрый рывком, Pro стабильнее под нагрузкой.</td><td>Air не идеален для постоянного тяжёлого монтажа/3D.</td></tr>
+          <tr><td>Watch SE vs Series vs Ultra</td><td>SE - база; Series - здоровье и экран; Ultra - спорт/автономность.</td><td>Ultra продаётся через сценарий, не только “самые дорогие часы”.</td><td>Ultra может быть слишком крупным.</td></tr>
+        </tbody></table></div>
+        <div class="grid">
+          <article class="card wide"><h3>iPhone обычный или Pro</h3><p>Обычный — рациональный выбор для связи, фото, соцсетей и долгого срока. Pro — экран 120 Гц, камеры, зум, видео, больше запаса.</p><div class="say">“Если фото и экран не принципиальны, обычного хватит. Если хотите лучший опыт каждый день — Pro чувствуется сразу.”</div></article>
+          <article class="card wide"><h3>iPhone Plus или Pro Max</h3><p>Оба большие. Plus — батарея и экран дешевле. Pro Max — максимум камер, экрана, материалов и мощности.</p><div class="say">“Plus — большой iPhone за разумные деньги. Pro Max — большой и максимальный.”</div></article>
+          <article class="card wide"><h3>iPad Air или iPad Pro</h3><p>Air — универсал. Pro — для тех, кто видит разницу в экране и реально использует мощность.</p><div class="say">“Если это учеба и заметки — Air. Если планшет как рабочая станция — Pro.”</div></article>
+          <article class="card wide"><h3>MacBook Air или Pro</h3><p>Air легче, тише и дешевле. Pro лучше держит нагрузку, имеет более сильный экран и больше портов.</p><div class="say">“Air — каждый день с собой. Pro — каждый день под нагрузкой.”</div></article>
+          <article class="card wide"><h3>Watch SE или Series</h3><p>SE — базовые часы. Series — больше здоровья, лучше экран, больше актуальных функций.</p><div class="say">“SE — понять, нужны ли часы. Series — пользоваться ими полноценно.”</div></article>
+          <article class="card wide"><h3>AirPods базовые или Pro</h3><p>Базовые удобны тем, кто не любит амбушюры. Pro нужны для шума, транспорта и лучшей изоляции.</p><div class="say">“Если метро и офис — Pro. Если не любите вакуумную посадку — обычные.”</div></article>
+        </div>
+      </section>
+
+      <section id="terms" data-searchable>
+        <h2>Термины простым языком</h2>
+        <details open><summary>OLED / Liquid Retina / XDR</summary><p>OLED дает глубокий черный и контраст. Liquid Retina у Apple обычно означает качественный LCD. XDR — повышенная яркость и широкий динамический диапазон у Pro-экранов.</p></details>
+        <details><summary>LiDAR</summary><p>Датчик глубины: помогает AR, фокусу в темноте и некоторым профессиональным задачам. Обычному клиенту важен редко, фотографу и дизайнеру — иногда.</p></details>
+        <details><summary>eSIM</summary><p>Электронная SIM-карта. Удобно для двух номеров и поездок, но зависит от оператора и региона устройства.</p></details>
+        <details><summary>IP68</summary><p>Защита от воды и пыли по стандарту, а не гарантия “можно купаться”. После падений и ремонта герметичность может быть нарушена.</p></details>
+        <details><summary>AppleCare / гарантия магазина</summary><p>Не смешивать международные программы Apple, региональные условия и гарантию продавца. По параллельному импорту формулировки лучше согласовать со старшим.</p></details>
+      </section>
+
+      <footer>
+        Основано на требованиях из текущей задачи и сверено по публичным страницам Apple на 18 июня 2026: iPhone, iPad, Mac, Watch и Accessories. Это не копия SEED / Sales Coach и не закрытый материал Apple; стиль и структура сделаны самостоятельно. Перед запуском обучения проверьте цены, наличие моделей, региональные партии, гарантийные формулировки и локальные условия магазина.
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const themeBtn = document.getElementById('themeBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+    const search = document.getElementById('search');
+    const sections = [...document.querySelectorAll('[data-searchable]')];
+    const navLinks = [...document.querySelectorAll('nav a')];
+
+    function setTheme(theme) {
+      root.dataset.theme = theme;
+      localStorage.setItem('apple-kb-theme', theme);
+      const dark = theme === 'dark';
+      themeIcon.textContent = dark ? '☀' : '☾';
+      themeText.textContent = dark ? 'Светлая тема' : 'Темная тема';
+    }
+
+    setTheme(localStorage.getItem('apple-kb-theme') || 'light');
+    themeBtn.addEventListener('click', () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'));
+
+    function clearMarks(node) {
+      node.querySelectorAll('mark').forEach(mark => mark.replaceWith(document.createTextNode(mark.textContent)));
+      node.normalize();
+    }
+
+    function markText(node, query) {
+      if (!query || ['SCRIPT', 'STYLE', 'MARK'].includes(node.nodeName)) return;
+      if (node.nodeType === Node.TEXT_NODE) {
+        const value = node.nodeValue;
+        const index = value.toLowerCase().indexOf(query);
+        if (index >= 0) {
+          const mark = document.createElement('mark');
+          mark.textContent = value.slice(index, index + query.length);
+          const after = document.createTextNode(value.slice(index + query.length));
+          const before = document.createTextNode(value.slice(0, index));
+          node.replaceWith(before, mark, after);
+        }
+        return;
+      }
+      [...node.childNodes].forEach(child => markText(child, query));
+    }
+
+    function applySearch() {
+      const query = search.value.trim().toLowerCase();
+      sections.forEach(section => {
+        clearMarks(section);
+        const matched = !query || section.innerText.toLowerCase().includes(query);
+        section.classList.toggle('hidden', !matched);
+        if (matched && query) markText(section, query);
+      });
+    }
+
+    search.addEventListener('input', applySearch);
+    window.addEventListener('keydown', event => {
+      if (event.key === '/' && document.activeElement !== search) {
+        event.preventDefault();
+        search.focus();
+      }
+      if (event.key === 'Escape') {
+        search.value = '';
+        applySearch();
+        search.blur();
+      }
+    });
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id));
+      });
+    }, { rootMargin: '-35% 0px -55% 0px', threshold: 0 });
+    sections.forEach(section => observer.observe(section));
+  </script>
+</body>
+</html>
